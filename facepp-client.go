@@ -92,28 +92,6 @@ func (self *fppClient) newRequestBodyWithParameters(parameters map[string]string
 	return
 }
 
-//func (self *fppClient) newRequestBodyWithParametersAndInputImageData(parameters map[string]string, imageData []byte, bodyWriter io.Writer) (contentType string, e error) {
-//	imageDataEncoded := base64.StdEncoding.EncodeToString(imageData)
-//	if writer, err := self.newMultipartWriterWithParameters(parameters, bodyWriter); err == nil {
-//		if part, err := writer.CreateFormFile("image_file", "image.jpg"); err == nil {
-//			if _, err = io.Copy(part, file); err == nil {
-//				if err := writer.Close(); err == nil {
-//					contentType = writer.FormDataContentType()
-//				} else {
-//					e = err
-//				}
-//			} else {
-//				e = err
-//			}
-//		} else {
-//			e = err
-//		}
-//	} else {
-//		e = err
-//	}
-//	return
-//}
-
 type fppClient struct {
 	ApiKey     string
 	ApiSecret  string
@@ -129,6 +107,7 @@ func NewClient(apiKey string, apiSecret string) (client *fppClient) {
 }
 
 const (
-	DETECT_BODY_URL     = "https://api-us.faceplusplus.com/humanbodypp/beta/detect"
-	DETECT_SKELETON_URL = "https://api-us.faceplusplus.com/humanbodypp/v1/skeleton"
+	DETECT_HUMAN_BODY_URL          = "https://api-us.faceplusplus.com/humanbodypp/beta/detect"
+	DETECT_HUMAN_BODY_SKELETON_URL = "https://api-us.faceplusplus.com/humanbodypp/v1/skeleton"
+	DETECT_HUMAN_BODY_SEGMENT_URL  = "https://api-us.faceplusplus.com/humanbodypp/v2/segment"
 )

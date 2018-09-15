@@ -14,7 +14,7 @@ func main() {
 	}
 	client := faceplusplus_client.NewClient(args[1], args[2])
 	if imageData, err := ioutil.ReadFile("examples/demo-pic.jpg"); err == nil {
-		if response, err := client.DetectSkelethonWithImageData(imageData); err == nil {
+		if response, err := client.DetectHumanBodySegmentWithImageData(imageData); err == nil {
 			fmt.Printf("response: %v", response)
 		} else {
 			println("error", err.Error())

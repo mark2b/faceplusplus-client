@@ -7,15 +7,12 @@ import (
 	"strings"
 )
 
-func (self *fppClient) DetectBody(filename string, returnAttributes []string) (response DetectBodyReponse, e error) {
+func (self *fppClient) DetectBody(filename string, returnAttributes []string) (response DetectHumanBodyReponse, e error) {
 	body := &bytes.Buffer{}
 	returnAttributesField := strings.Join(returnAttributes, ",")
 	if contentType, err := self.newRequestBodyWithParametersAndInputFile(map[string]string{"return_attributes": returnAttributesField}, filename, body); err == nil {
-		if request, err := http.NewRequest("POST", DETECT_BODY_URL, body); err == nil {
-			if err := self.executeRequest(request, contentType, &response); err == nil {
-			} else {
-				e = err
-			}
+		if rsp, err := self.detectHumanBody(body, contentType); err == nil {
+			response = rsp
 		} else {
 			e = err
 		}
@@ -25,15 +22,12 @@ func (self *fppClient) DetectBody(filename string, returnAttributes []string) (r
 	return
 }
 
-func (self *fppClient) DetectBodyWithImageData(imageData []byte) (response DetectBodyReponse, e error) {
+func (self *fppClient) DetectBodyWithImageData(imageData []byte) (response DetectHumanBodyReponse, e error) {
 	body := &bytes.Buffer{}
 	imageDataEncoded := base64.StdEncoding.EncodeToString(imageData)
 	if contentType, err := self.newRequestBodyWithParameters(map[string]string{"image_base64": imageDataEncoded}, body); err == nil {
-		if request, err := http.NewRequest("POST", DETECT_BODY_URL, body); err == nil {
-			if err := self.executeRequest(request, contentType, &response); err == nil {
-			} else {
-				e = err
-			}
+		if rsp, err := self.detectHumanBody(body, contentType); err == nil {
+			response = rsp
 		} else {
 			e = err
 		}
@@ -43,7 +37,19 @@ func (self *fppClient) DetectBodyWithImageData(imageData []byte) (response Detec
 	return
 }
 
-type DetectBodyReponse struct {
+func (self *fppClient) detectHumanBody(body *bytes.Buffer, contentType string) (response DetectHumanBodyReponse, e error) {
+	if request, err := http.NewRequest("POST", DETECT_HUMAN_BODY_URL, body); err == nil {
+		if err := self.executeRequest(request, contentType, &response); err == nil {
+		} else {
+			e = err
+		}
+	} else {
+		e = err
+	}
+	return
+}
+
+type DetectHumanBodyReponse struct {
 	TimeUsed    int    `json:"time_used",omitempty`
 	ImageId     string `json:"image_id",omitempty`
 	HumanBodies []struct {
